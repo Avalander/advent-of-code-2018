@@ -8,20 +8,8 @@ const {
 } = require('ramda')
 
 const { loadInput } = require('../util')
+const { parseRow } = require('./shared')
 
-
-const row_regex = /^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$/
-
-const parseRow = row => {
-	const [ _, id, left, top, width, height ] = row_regex.exec(row)
-	return {
-		id,
-		left: parseInt(left),
-		top: parseInt(top),
-		width: parseInt(width),
-		height: parseInt(height),
-	}
-}
 
 const markAreas = (map, { left, top, width, height }) => {
 	for (let x = left; x < left + width; x++) {
