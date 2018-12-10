@@ -32,4 +32,4 @@ const main = () => {
 	return twos * threes
 }
 
-console.log(main())
+module.exports = main

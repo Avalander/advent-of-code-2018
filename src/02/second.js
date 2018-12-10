@@ -60,8 +60,4 @@ const main = () => {
 	return result
 }
 
-console.log(main())
-
-module.exports = {
-	closeEnough,
-}
+module.exports = main
