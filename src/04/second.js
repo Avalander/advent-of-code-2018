@@ -1,5 +1,4 @@
 const {
-	add,
 	map,
 	pipe,
 	reduce,
@@ -17,18 +16,18 @@ const {
 } = require('./shared')
 
 
-const addGuardId = ([ data, guard_id ], x) =>
+const addGuardId = ([data, guard_id], x) =>
 	(x.guard_id
-		? [[ ...data, x ], x.guard_id ]
-		: [[ ...data, { ...x, guard_id }], guard_id ]
+		? [[...data, x], x.guard_id]
+		: [[...data, { ...x, guard_id }], guard_id]
 	)
 
-const first = ([ x ]) => x
+const first = ([x]) => x
 
 const parseLogs = pipe(
 	sortLogs,
 	map(parseLog),
-	reduce(addGuardId, [[], 0 ]),
+	reduce(addGuardId, [[], 0]),
 	first,
 )
 
@@ -88,39 +87,35 @@ const logReducers = {
 const logTimeAsleep = (prev, { type, time, guard_id }) =>
 	logReducers[type](prev, time, guard_id)
 
-const countTimeAsleep = guard =>
+const findNap = guard =>
 	({
 		...guard,
-		total_min_asleep: guard.naps.reduce(add, 0),
+		most_common_nap: guard.naps.reduce(
+			(prev, x, i) => x > prev[0]
+				? [ x, i ]
+				: prev,
+			[ 0, 0 ]
+		),
 	})
 
-const compareTimeAsleep = (a, b) =>
-	b.total_min_asleep - a.total_min_asleep
+const compareNaps = (a, b) =>
+	b.most_common_nap[0] - a.most_common_nap[0]
 
 
 const findSleepiestGuard = pipe(
 	parseLogs,
 	reduce(logTimeAsleep, {}),
 	Object.values,
-	map(countTimeAsleep),
-	sort(compareTimeAsleep),
+	map(findNap),
+	sort(compareNaps),
 	take(1),
 	unwrapList,
 )
 
-const findSleepiestMinute = pipe(
-	sort((a, b) => b[0] - a[0]),
-	take(1),
-	unwrapList,
-	([ x, i ]) => i
-)
 
 const main = input => () => {
-	const { guard_id, naps } = findSleepiestGuard(input)
-	const sleepiest_minute = findSleepiestMinute(
-		naps.map((x, i) => [x, i])
-	)
-	return parseInt(guard_id) * sleepiest_minute
+	const { guard_id, most_common_nap } = findSleepiestGuard(input)
+	return parseInt(guard_id) * most_common_nap[1]
 }
 
 
