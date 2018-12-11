@@ -13,3 +13,5 @@ module.exports.trace = label => data => {
 	console.log(label, JSON.stringify(data, null, 2))
 	return data
 }
+
+module.exports.unwrapList = ([ x ]) => x
