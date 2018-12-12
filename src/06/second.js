@@ -1,10 +1,8 @@
 const {
-	filter,
 	map,
 	pipe,
 	prop,
 	reduce,
-	sort,
 } = require('ramda')
 
 const { loadInput } = require('../util')
@@ -15,7 +13,6 @@ const {
 	measureDistance,
 	parseRow,
 } = require('./shared')
-
 
 
 const reduceDistances = (input, distance) => (prev, point) => {
